@@ -2,9 +2,20 @@ let gvIndex = 0
 let gvQueList = []
 let gvQueSuffle = false // 문제 섞겠는냐
 let gvMulSuffle = true // 보기 섞겠느냐
+let gvMarkDownTF = true // 마크다운 컨버트?
+
+let converter;
 
 // 시작
 function fnInit() {
+    //converter = new showdown.Converter();
+    converter = new showdown.Converter();
+    //showdown.setFlavor('github');
+    converter.setOption('tables', 'true');
+
+    gvQueSuffle = $("#chkQueSuffle").prop("checked")? true:false // 문제 섞겠는냐
+    gvMulSuffle = $("#chkMulSuffle").prop("checked")? true:false // 보기 섞겠느냐
+
     fnMoonLoad() // 문제 로드
     fnSetQ() // 문제1번 화면에 그리기
 }
@@ -19,7 +30,11 @@ function fnSelQue(that) {
 }
 
 function fnMoonLoad() {
-    gvQueList = gvMoon.l
+    //gvQueList = gvMoon.l
+    gvQueList = []
+    for ( let i = 0; i < gvMoon.l.length; i++ ) {
+        gvQueList.push(gvMoon.l[i])
+    }
 
     // 문제 섞을거냐
     if ( gvQueSuffle ) gvQueList = shuffleArray(gvQueList);
@@ -163,6 +178,7 @@ function fnSetProgress() {
 // 문제 그리기
 function fnSetQ() {
     fnSetProgress() // 프로그레스바 그리기
+
     let vQue = gvQueList[gvIndex]
     let n = gvIndex + 1 // 문제번호
     let m = vQue.m // 문제
@@ -214,6 +230,8 @@ function fnSetQ() {
         $("#div_d").html('✔ '+ dg ) // 답
     }
     $("#div_h").html(hg) // 해설
+
+    $("table").addClass("table")
 }
 
 // 보기 가공
@@ -224,8 +242,8 @@ function fnMakeMultiple() {
 
     if ( v.length == 0 ) { // 보기가 없으면 주관식
         gvQueList[gvIndex].multiple = []
-        gvQueList[gvIndex].finAnswers = d
-        gvQueList[gvIndex].hg = h
+        gvQueList[gvIndex].finAnswers = fnMarkDown(d)
+        gvQueList[gvIndex].hg = fnMarkDown(h)
     } else {
         // 객관식
         // 보기 가공 시작
@@ -254,11 +272,12 @@ function fnMakeMultiple() {
 
             // 3. 보기 변경
             v[i] = v[i].replace("__" + (i + 1) + "__ ", "") // TODO 임시
+
             vShuffleV[vShuffleMap[i]] = v[i]
         }
         gvQueList[gvIndex].multiple = vShuffleV
         gvQueList[gvIndex].finAnswers = vShuffleD.sort()
-        gvQueList[gvIndex].hg = h
+        gvQueList[gvIndex].hg = fnMarkDown(h)
     }
 }
 
@@ -277,7 +296,7 @@ function fnVText() {
             "<li class='list-group-item' id='liQue" + i + "'>"+
             "<div class='form-check'>" +
             "  <input class='form-check-input' type='" + type + "' name='chkQue' id='chkQue" + i + "'>" +
-            "  <label class='form-check-label' for='chkQue" + i + "' id='chkQueText" + i + "'>" + fnConvVNum(i+1) + " " + vShuffleV[i] +
+            "  <label class='form-check-label' for='chkQue" + i + "' id='chkQueText" + i + "'>" + fnMarkDown( fnConvVNum(i+1) + " " + vShuffleV[i]) +
             "  </label>" +
             "</div>"+
             "</li>"
@@ -302,32 +321,43 @@ function fnMakeM(m) {
     if ( $.isNumeric(k) ) {
         m = m.substr(m.indexOf(" "))
     }
+
+    m = fnMarkDown(m)
+
     return m
 }
 
+// 화면 글자 크기 조절
 let gvSeemSize = 1, gvZoomSize = 1
 function fnZoom(p) {
     if ( p == "I" ) {
-			gvSeemSize += 0.05;
-			gvZoomSize *= 1.2;
+        gvSeemSize += 0.05;
+        gvZoomSize *= 1.2;
     } else if ( p == "O" ) {
-			gvSeemSize -= 0.05;
-			gvZoomSize /= 1.2;
+        gvSeemSize -= 0.05;
+        gvZoomSize /= 1.2;
     } else {
-    	return
+        return
     }
 
     let browser = navigator.userAgent.toLowerCase();
     if ( browser.indexOf("firefox") != -1 ) { //브라우저가 firefox일때
-        document.body.style.webkitTransform = 'scale('+gvSeemSize+')';  
-        document.body.style.webkitTransformOrigin = '50% 0 0'; //늘리고 줄였을때위치, 
-        document.body.style.msTransform = 'scale('+gvSeemSize+')'; 
+        document.body.style.webkitTransform = 'scale(' + gvSeemSize + ')';
+        document.body.style.webkitTransformOrigin = '50% 0 0'; //늘리고 줄였을때위치,
+        document.body.style.msTransform = 'scale(' + gvSeemSize + ')';
         document.body.style.msTransformOrigin = '50% 0 0';
-        document.body.style.transform = 'scale('+gvSeemSize+')';
+        document.body.style.transform = 'scale(' + gvSeemSize + ')';
         document.body.style.transformOrigin='50% 0 0';
-        document.body.style.OTransform = 'scale('+gvSeemSize+')';
+        document.body.style.OTransform = 'scale(' + gvSeemSize + ')';
         document.body.style.OTransformOrigin='50% 0 0';
     } else {
         document.body.style.zoom = gvZoomSize;
     }
+}
+
+function fnMarkDown(pStr) {
+    console.log("fnMarkDown pStr: " + pStr )
+    console.log("fnMarkDown converter.makeHtml(pStr): " + converter.makeHtml(pStr) )
+    return gvMarkDownTF? converter.makeHtml(pStr) : pStr
+
 }
