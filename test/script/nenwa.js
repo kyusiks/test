@@ -253,7 +253,7 @@ function fnSetQ() {
     $("#div_h").html(h1) // 해설
 
     fnSetMyAnswers() // 내가 저장한 답 그리기
-    //$("#div_dapgroup").hide() // 답, 해설부분 가리기
+    $("#div_dapgroup").hide() // 답, 해설부분 가리기
 
     $("table").addClass("table table-bordered")
 }
