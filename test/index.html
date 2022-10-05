@@ -59,7 +59,6 @@
                         <span class="input-group-text" id="addon-wrapping">문제</span>
                         <select class="form-select" id="sel_que" onchange="fnSelQue(this)"></select>
 
-                        <button type="button" class="btn btn-primary" onclick="fnQue('R')"><i class="bi bi-arrow-repeat"></i></button>
                         <button type="button" class="btn btn-primary btn-lg" onclick="fnQue('N')"><i class="bi bi-arrow-right-circle"></i></button>
                     </div>
 
@@ -77,8 +76,9 @@
                 </div>
                 <div class="card-body text-end">
                     <div class="input-group flex-nowrap">
+                        <button type="button" class="btn btn-primary" onclick="fnQue('R')"><i class="bi bi-arrow-repeat"></i></button>
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-gear"></i>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -113,6 +113,7 @@
                             </ul>
                         </div>
                     </div>
+
                 </div>
                 <button type="button" class="btn btn-primary btn-lg" onclick="fnQue('N')"><i class="bi bi-arrow-right-circle"></i></button>
             </div>
