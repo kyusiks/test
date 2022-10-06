@@ -30,7 +30,6 @@
             font-family: 'MaruBuriBold';
             font-family: 'MaruBuriSemiBold';
             */
-
         </script>
 
         <style>
@@ -44,7 +43,6 @@
         </style>
     </head>
     <body>
-
         <div class="container-fluid">
             <div class="progress">
                 <div class="progress-bar" role="progressbar" id="prg_que" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -52,7 +50,6 @@
 
             <div class="card border-dark" style="width: 100%">
                 <div class="card-header card-title text-end">
-
                     <div class="input-group flex-nowrap">
                         <button type="button" class="btn btn-primary" onclick="fnQue('P')"><i class="bi bi-arrow-left-circle"></i></button>
 
@@ -84,12 +81,12 @@
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <li>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                        <label class="form-check-label" for="flexRadioDefault1">공부모드</label>
+                                        <input class="form-check-input" type="radio" name="chkMode" id="chkMode1" value="1">
+                                        <label class="form-check-label" for="chkMode1">공부모드</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                                        <label class="form-check-label" for="flexRadioDefault2">시험모드</label>
+                                        <input class="form-check-input" type="radio" name="chkMode" id="chkMode2" value="2" checked>
+                                        <label class="form-check-label" for="chkMode2">시험모드</label>
                                     </div>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
@@ -106,16 +103,23 @@
                                         <label class="form-check-label" for="chkMulSuffle">보기섞기</label>
                                     </div>
                                 </li>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" onclick="fnZoom('I')"><i class="bi bi-plus-circle"></i> 글자 크게</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="fnZoom('O')"><i class="bi bi-dash-circle"></i> 글자 작게</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" onclick="fnZoom('I')"><i class="bi bi-plus-circle"></i> 글자 크게</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="fnZoom('O')"><i class="bi bi-dash-circle"></i> 글자 작게</a></li>
                             </ul>
                         </div>
                     </div>
-
                 </div>
                 <button type="button" class="btn btn-primary btn-lg" onclick="fnQue('N')"><i class="bi bi-arrow-right-circle"></i></button>
+
+                <div class="position-fixed bottom-0 end-0 p-3"  style="z-index: 11">
+                    <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                            <strong class="me-auto" id="vAlertStr"></strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
