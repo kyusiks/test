@@ -2,6 +2,7 @@ let gvQueList = []
 let gvQueSuffle = false // 문제 섞겠는냐
 let gvMulSuffle = true // 보기 섞겠느냐
 let gvMarkDownTF = true // 마크다운 컨버트?
+let gvViewMode = '2' // 보기보드 1공부모드 2시험모드
 
 var converter;
 let gvIndex = 0
@@ -13,14 +14,25 @@ function fnInit() {
         if ($("#chkMulSuffle").prop("checked") ) gvQueList[fnIndex()].v1 = undefined // 섞기를 누르면 섞을수 있게 초기화
         reload()
     } )
+    $("input[name='chkMode']").click( () => {
+        fnAlert('공부모드 <i class="bi bi-arrow-right"></i> 문제와 답이 같이 표시됩니다.<br>시험모드 <i class="bi bi-arrow-right"></i> 문제를 푼 후 답이 표시됩니다.')
+        gvViewMode = $('input[name="chkMode"]:checked').val()
+    })
+
     gvIndex = 0
     reload()
+}
 
+function fnAlert(vMsg) {
+    $("#vAlertStr").html(vMsg)
+    let obj = new bootstrap.Toast($("#liveToast"))
+    obj.show()
 }
 
 function reload() {
     gvQueSuffle = $("#chkQueSuffle").prop("checked")? true:false // 문제 섞겠는냐
     gvMulSuffle = $("#chkMulSuffle").prop("checked")? true:false // 보기 섞겠느냐
+    gvViewMode  = $('input[name="chkMode"]:checked').val();
 
     fnMoonLoad() // 문제 로드
     fnSetQ() // 문제1번 화면에 그리기
@@ -70,7 +82,6 @@ fnCookie = {
 }
 
 function fnMoonLoad() {
-    //gvQueList = gvMoon.l
     let vStr = ""
     gvQueList = []
     for ( let i = 0; i < gvMoon.l.length; i++ ) {
@@ -84,6 +95,7 @@ function fnMoonLoad() {
     if ( vIndex == "" ) vIndex = 0
     if ( vIndex >= gvQueList.length ) vIndex = 0
     fnIndex(vIndex)
+    $("#sel_que").val(vIndex)
 
     /*
     gvQueList[배열]
@@ -233,9 +245,6 @@ function fnOpenDap() {
 function fnSetQ() {
     let vQue = gvQueList[fnIndex()]
 
-    //console.log(fnIndex())
-    //console.log(vQue)
-    //console.log(vQue.v1)
     // 문제 가공 전이라면 가공
     if ( vQue.v1 == undefined ) fnMakeMultiple() // 문제 가공
 
@@ -253,7 +262,13 @@ function fnSetQ() {
     $("#div_h").html(h1) // 해설
 
     fnSetMyAnswers() // 내가 저장한 답 그리기
-    $("#div_dapgroup").hide() // 답, 해설부분 가리기
+
+    if ( gvViewMode == "1" ) { // 공부모드 => 답이 바로 오픈된다.
+        fnOpenDap()
+
+    }  if ( gvViewMode == "2" ) { // 시험모드 => 문제를 풀고 답을본다.
+         $("#div_dapgroup").hide() // 답, 해설부분 가리기
+    }
 
     $("table").addClass("table table-bordered")
 }
