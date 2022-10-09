@@ -1,32 +1,37 @@
 let gvQueList = []
-let gvQueSuffle = false // 문제 섞겠는냐
-let gvMulSuffle = true // 보기 섞겠느냐
+let gvQueSuffle // 문제 섞겠는냐
+let gvMulSuffle // 보기 섞겠느냐
+let gvViewMode  // 보기보드 1공부모드 2시험모드
 let gvMarkDownTF = true // 마크다운 컨버트?
-let gvViewMode = '2' // 보기보드 1공부모드 2시험모드
 
 var converter;
 let gvIndex = 0
 
-// 시작
-function fnInit() {
+$( document ).ready(function() {
+    // 문제 순서 섞기
     $("#chkQueSuffle").change( () => reload() )
+
+    // 보기 순서 섞기
     $("#chkMulSuffle").change( () => {
         if ($("#chkMulSuffle").prop("checked") ) gvQueList[fnIndex()].v1 = undefined // 섞기를 누르면 섞을수 있게 초기화
         reload()
     } )
+
+    // 모드 선택. 공부모드,시험모드
     $("input[name='chkMode']").click( () => {
         fnAlert('공부모드 <i class="bi bi-arrow-right"></i> 문제와 답이 같이 표시됩니다.<br>시험모드 <i class="bi bi-arrow-right"></i> 문제를 푼 후 답이 표시됩니다.')
         gvViewMode = $('input[name="chkMode"]:checked').val()
     })
 
+    gvQueSuffle = $("#chkQueSuffle").prop("checked")? true:false // 문제 섞겠는냐
+    gvMulSuffle = $("#chkMulSuffle").prop("checked")? true:false // 보기 섞겠느냐
+    gvViewMode  = $('input[name="chkMode"]:checked').val();
+});
+
+// 시작
+function fnInit() {
     gvIndex = 0
     reload()
-}
-
-function fnAlert(vMsg) {
-    $("#vAlertStr").html(vMsg)
-    let obj = new bootstrap.Toast($("#liveToast"))
-    obj.show()
 }
 
 function reload() {
@@ -59,7 +64,6 @@ function fnSetProgress() {
     let vMent = (fnIndex() + 1) + " / " + (gvQueList.length)
     $("#prg_que").attr("aria-valuenow", fnIndex()).css("width", vPer + "%").text(vMent)
 }
-
 
 // 쿠키처리
 fnCookie = {
@@ -108,9 +112,6 @@ function fnMoonLoad() {
     if ( gvQueSuffle ) gvQueList = shuffleArray(gvQueList);
 }
 
-function shuffleArray(array) {
-    return array.sort(() => Math.random() - 0.5);
-}
 
 function fnSelQue(that) {
     fnIndex(Number($(that).val()))
@@ -180,14 +181,15 @@ function fnQue(vParam) {
         fnIndexMinus()
         fnSetQ()
     } else if ( vParam == "R" ) {
-    	$.getScript("./script/data.js", function(data, textStatus, jqxhr) {
-    		//console.log(data); //data returned
-    		//console.log(textStatus); //success
-    		//console.log(jqxhr.status); //200
-    		console.log('Load was performed.');
+        // 스크립트 새로 읽기
+        $.getScript("./script/data.js", function(data, textStatus, jqxhr) {
+            //console.log(data); //data returned
+            //console.log(textStatus); //success
+            //console.log(jqxhr.status); //200
+            console.log('Load was performed.');
             //fnInit()
             fnSetQ()
-    	})
+        })
 
         return;
         // todo
@@ -243,6 +245,7 @@ function fnOpenDap() {
 
 // 문제 그리기
 function fnSetQ() {
+    $('html').scrollTop(0);
     let vQue = gvQueList[fnIndex()]
 
     // 문제 가공 전이라면 가공
@@ -416,4 +419,11 @@ function fnZoom(p) {
     }
 }
 
-fnMarkDown = (pStr) => gvMarkDownTF? marked.parse(pStr+"") : pStr
+function fnAlert(vMsg) {
+    $("#vAlertStr").html(vMsg)
+    let obj = new bootstrap.Toast($("#liveToast"))
+    obj.show()
+}
+
+fnMarkDown = pStr => gvMarkDownTF? marked.parse(pStr+"") : pStr
+shuffleArray = array => array.sort(() => Math.random() - 0.5)
