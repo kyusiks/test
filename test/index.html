@@ -18,13 +18,14 @@
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
         <script> MathJax = { tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]} }; </script>
 
-        <script src="./script/data.js"  type="text/javascript"></script>
-        <script src="./script/nenwa.js" type="text/javascript"></script>
+        <!--script src="./script/data.js"  type="text/javascript"></script-->
+        <script src="./js/nenwa.js" type="text/javascript"></script>
 
         <script>
             $( document ).ready(function() {
-                fnInit();
-            });
+                //fnInit();
+                fnSelClass() // 임시
+            })
             /*
             font-family: 'MaruBuriExtraLight';
             font-family: 'MaruBuriLight';
@@ -56,7 +57,7 @@
                         <button type="button" class="btn btn-primary" onclick="fnQue('P')"><i class="bi bi-arrow-left-circle"></i></button>
 
                         <span class="input-group-text" id="addon-wrapping">문제</span>
-                        <select class="form-select" id="sel_que" onchange="fnSelQue(this)"></select>
+                        <select class="form-select" id="selQue"></select>
 
                         <button type="button" class="btn btn-primary btn-lg" onclick="fnQue('N')"><i class="bi bi-arrow-right-circle"></i></button>
                     </div>
@@ -108,6 +109,14 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#" onclick="fnZoom('I')"><i class="bi bi-plus-circle"></i> 글자 크게</a></li>
                                 <li><a class="dropdown-item" href="#" onclick="fnZoom('O')"><i class="bi bi-dash-circle"></i> 글자 작게</a></li>
+
+
+                                <li><hr class="dropdown-divider"></li>
+                                <select class="form-select" id="selClass">
+                                    <option value="">과목 선택</option>
+                                    <option value="dap" selected>DAP 데이터 아키텍처 전문가</option>
+                                </select>
+
                             </ul>
                         </div>
                     </div>
