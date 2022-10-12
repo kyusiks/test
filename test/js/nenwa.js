@@ -371,7 +371,7 @@ function fnVText() {
     if ( vShuffleV.length == 0 ) { // 보기가 없으면 주관식
         vRtn += "<input class='form-control form-control-lg' type='text' id='txtAnswer'>"
     } else {
-        vRtn += "<ul class='list-group'>"
+        vRtn += "<ul class='list-group list-group-flush'>"
         for ( let i = 0; i < vShuffleV.length; i++ ) {
             let vv =
             "<li class='list-group-item' id='liQue" + i + "'>"+
