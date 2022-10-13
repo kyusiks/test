@@ -43,26 +43,29 @@
             #div_v{ }
             #div_d{ font-size: x-large; font-family: 'MaruBuriBold';}
             #div_h{ font-family: 'MaruBuriSemiBold';}
+            img { max-width : 100% }
+            .list-group {bs-list-group-border-width : 0px !important; }
+
         </style>
     </head>
     <body>
         <div class="container-fluid">
             <div class="progress">
-                <div class="progress-bar" role="progressbar" id="prg_que" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" id="prg_que" style="width: 100%;min-width: 2em;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
 
             <div class="card border-dark" style="width: 100%">
                 <div class="card-header card-title text-end">
                     <div class="input-group flex-nowrap">
-                        <button type="button" class="btn btn-primary" onclick="fnQue('P')"><i class="bi bi-arrow-left-circle"></i></button>
+                        <button type="button" class="btn btn-outline-success" onclick="fnQue('P')"><i class="bi bi-arrow-left-circle"></i></button>
 
                         <span class="input-group-text" id="addon-wrapping">문제</span>
                         <select class="form-select" id="selQue"></select>
 
-                        <button type="button" class="btn btn-primary btn-lg" onclick="fnQue('N')"><i class="bi bi-arrow-right-circle"></i></button>
+                        <button type="button" class="btn btn-outline-success btn-lg" onclick="fnQue('N')"><i class="bi bi-arrow-right-circle"></i></button>
                     </div>
-
                 </div>
+                <h6 id="div_k" class="text-end">상세과목</h6>
                 <div class="card-body" id="div_m">문제내용</div>
                 <div class="card-body" id="div_v">
                     <div class="row">보기</div>
@@ -76,9 +79,9 @@
                 </div>
                 <div class="card-body text-end">
                     <div class="input-group flex-nowrap">
-                        <button type="button" class="btn btn-primary" onclick="fnQue('R')"><i class="bi bi-arrow-repeat"></i></button>
+                        <button type="button" class="btn btn-outline-success" onclick="fnQue('R')"><i class="bi bi-arrow-repeat"></i></button>
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-gear"></i>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -121,7 +124,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary btn-lg" onclick="fnQue('N')"><i class="bi bi-arrow-right-circle"></i></button>
+                <button type="button" class="btn btn-outline-success btn-lg" onclick="fnQue('N')"><i class="bi bi-arrow-right-circle"></i></button>
 
                 <div class="position-fixed bottom-0 end-0 p-3"  style="z-index: 11">
                     <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
