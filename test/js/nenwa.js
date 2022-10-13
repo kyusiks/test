@@ -32,7 +32,7 @@ $( document ).ready(function() {
 
     gvQueSuffle = $("#chkQueSuffle").prop("checked")? true:false // 문제 섞겠는냐
     gvMulSuffle = $("#chkMulSuffle").prop("checked")? true:false // 보기 섞겠느냐
-    gvViewMode  = $('input[name="chkMode"]:checked').val();
+    gvViewMode  = $('input[name="chkMode"]:checked').val(); // 공부모드 시험모드
 });
 
 function fnSelClass() {
@@ -109,7 +109,7 @@ function fnMoonLoad() {
     gvQueList = []
     for ( let i = 0; i < gvMoon.l.length; i++ ) {
         gvQueList.push(gvMoon.l[i])
-        vStr += "<option value=" + i + ">" + (i+1) + "</option>" // 문제 SelectBox 만들기
+        vStr += "<option value=" + i + ">" + (i+1) + ((gvMoon.l[i].k == undefined)? "" : " - " + gvMoon.l[i].k) + "</option>" // 문제 SelectBox 만들기
     }
     $("#selQue").html(vStr)
     fnSetProgress()
@@ -279,6 +279,11 @@ function fnSetQ() {
     let h1 = vQue.h1 // 해설 가공
     let sd = vQue.myAnswers // sd [배열] 선택한 답
 
+    let k1 = vQue.k1 // 상세 과목
+
+
+
+    $("#div_k").html(k1) // 과목
     $("#div_m").html(m1) // 문제
     $("#div_v").html(fnVText()) // 보기 가공
     $("#div_d").html(d1) // 답
@@ -299,10 +304,13 @@ function fnSetQ() {
 // 보기 가공
 function fnMakeMultiple() {
     let vIndex = fnIndex()
+    // [필수]
     let m = gvQueList[vIndex].m // 문제
     let v = gvQueList[vIndex].v // [배열] 보기
     let d = gvQueList[vIndex].d // [배열] 답
     let h = gvQueList[vIndex].h // 해설
+    // [선택]
+    let k = gvQueList[vIndex].k // 상세과목명
 
     if ( d == undefined ) d = [""]
     m = fnMakeM(m) //TODO 임시 문제 가공
@@ -359,6 +367,7 @@ function fnMakeMultiple() {
     gvQueList[vIndex].di = di // 답 인덱스
     gvQueList[vIndex].d1 = fnMarkDown("<i class='bi bi-check-lg'></i> " + d1) // 답 markdown
     gvQueList[vIndex].h1 = fnMarkDown(h1)
+    gvQueList[vIndex].k1 = ( k == undefined )? "": "<span class='badge bg-secondary'>" + k + "</span>"
 }
 
 // 보기를 html로 변환
