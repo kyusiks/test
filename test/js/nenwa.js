@@ -104,6 +104,7 @@ fnCookie = {
     },
 }
 
+
 function fnMoonLoad() {
     let vStr = ""
     gvQueList = []
@@ -230,8 +231,10 @@ function fnOpenDap() {
     // 정답에 따라 색칠
     if ( vCorrect ) {
         $("#div_dapgrouptab").removeClass("alert-danger").addClass("alert-success")
+        $("#div_d").removeClass("is-invalid").addClass("is-valid")
     } else {
         $("#div_dapgrouptab").removeClass("alert-success").addClass("alert-danger")
+        $("#div_d").removeClass("is-valid").addClass("is-invalid")
     }
 
     // 답 그룹 오픈
@@ -243,9 +246,8 @@ function fnOpenDap() {
         // 선택한것을 붉은색. 추후 정답을 초록색으로 덧칠함. 한번에 할수있는게 있을텐데
         for ( let i = 0; i < vMultiple.length; i++ ) {
             if ( $('#chkQue'+ i).is(':checked') ) {
-                $("#liQue" + i ).addClass("list-group-item-danger")
+                $("#divFormControl" + i ).removeClass("form-control-plaintext").addClass("form-control is-invalid")
             }
-            $('#chkQue'+ i).attr("disabled","disabled")
         }
 
         // 정답을 초록색
@@ -254,11 +256,11 @@ function fnOpenDap() {
             let k = vFinAnswers[i] - 1
             // 답을 굵게
             $("#chkQueText" + k ).css('font-weight', 'bold')
-            $("#liQue" + k ).removeClass("list-group-item-danger").addClass("list-group-item-success")
+            //$("#liQue" + k ).removeClass("list-group-item-danger").addClass("list-group-item-success")
+            $("#divFormControl" + k ).removeClass("form-control-plaintext is-invalid").addClass("form-control is-valid")
         }
     } else {
-        //TODO 주관식 스타일 수정.
-        $('#txtAnswer').addClass(vCorrect?"list-group-item list-group-item-success":"list-group-item list-group-item-danger")
+        $('#txtAnswer').addClass(vCorrect?"is-valid":"is-invalid")
         $('#txtAnswer').attr("readonly","readonly")
     }
 }
@@ -280,8 +282,6 @@ function fnSetQ() {
     let sd = vQue.myAnswers // sd [배열] 선택한 답
 
     let k1 = vQue.k1 // 상세 과목
-
-
 
     $("#div_k").html(k1) // 과목
     $("#div_m").html(m1) // 문제
@@ -380,19 +380,18 @@ function fnVText() {
     if ( vShuffleV.length == 0 ) { // 보기가 없으면 주관식
         vRtn += "<input class='form-control form-control-lg' type='text' id='txtAnswer'>"
     } else {
-        vRtn += "<ul class='list-group list-group-flush'>"
+        //vRtn += "<ul class='list-group list-group-flush'>"
         for ( let i = 0; i < vShuffleV.length; i++ ) {
             let vv =
-            "<li class='list-group-item' id='liQue" + i + "'>"+
-            "<div class='form-check'>" +
+            //"<li class='list-group-item' id='liQue" + i + "'>"+
+            "<div class='form-check form-control-plaintext' id='divFormControl" + i + "'>" +
             "  <input class='form-check-input' type='" + type + "' name='chkQue' id='chkQue" + i + "'>" +
             "  <label class='form-check-label' for='chkQue" + i + "' id='chkQueText" + i + "'>" +  vShuffleV[i] +
             "  </label>" +
-            "</div>"+
-            "</li>"
+            "</div>"//+ "</li>"
             vRtn += vv
         }
-        vRtn += "</ul>"
+        //vRtn += "</ul>"
     }
     return vRtn
 }
@@ -414,9 +413,7 @@ function fnMakeM(m) {
     for ( let i = 0; i < gvStrongStr.length; i++ ) {
         m = m.replace(" " + gvStrongStr[i] + " "," <u>**" + gvStrongStr[i] + "**</u> ")
     }
-
     m = fnMarkDown(m) // 마크다운 변환
-
     return m
 }
 
