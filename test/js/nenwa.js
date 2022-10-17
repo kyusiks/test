@@ -104,7 +104,6 @@ fnCookie = {
     },
 }
 
-
 function fnMoonLoad() {
     let vStr = ""
     gvQueList = []
@@ -202,24 +201,7 @@ function fnQue(vParam) {
         fnSetQ()
     } else if ( vParam == "R" ) {
         // 스크립트 새로 읽기
-        $.getScript("./script/data.js", function(data, textStatus, jqxhr) {
-            //console.log(data); //data returned
-            //console.log(textStatus); //success
-            //console.log(jqxhr.status); //200
-            console.log('Load was performed.');
-            //fnInit()
-            reload()
-            //fnSetQ()
-        })
-
-        return;
-        // todo
-
-        if ( $("#div_d").is(":visible") ) { // 답이 열려있을때
-            fnQue("N")
-        } else {
-            fnOpenDap()
-        }
+        reload()
     }
 }
 
@@ -231,10 +213,10 @@ function fnOpenDap() {
     // 정답에 따라 색칠
     if ( vCorrect ) {
         $("#div_dapgrouptab").removeClass("alert-danger").addClass("alert-success")
-        $("#div_d").removeClass("is-invalid").addClass("is-valid")
+        //$("#div_d").removeClass("is-invalid").addClass("is-valid")
     } else {
         $("#div_dapgrouptab").removeClass("alert-success").addClass("alert-danger")
-        $("#div_d").removeClass("is-valid").addClass("is-invalid")
+        //$("#div_d").removeClass("is-valid").addClass("is-invalid")
     }
 
     // 답 그룹 오픈
@@ -259,9 +241,9 @@ function fnOpenDap() {
             //$("#liQue" + k ).removeClass("list-group-item-danger").addClass("list-group-item-success")
             $("#divFormControl" + k ).removeClass("form-control-plaintext is-invalid").addClass("form-control is-valid")
         }
-    } else {
+    } else { // 주관식
         $('#txtAnswer').addClass(vCorrect?"is-valid":"is-invalid")
-        $('#txtAnswer').attr("readonly","readonly")
+        $('#txtAnswer').attr("readonly", "readonly")
     }
 }
 
@@ -351,8 +333,7 @@ function fnMakeMultiple() {
 
             // 3. 보기 변경
             v1[vShuffleMap[i]] = v[i]
-
-            v1[vShuffleMap[i]] = v1[vShuffleMap[i]].replace("__" + (i + 1) + "__ ", "") // TODO 임시
+            //v1[vShuffleMap[i]] = v1[vShuffleMap[i]].replace("__" + (i + 1) + "__ ", "") // TODO 임시
             v1[vShuffleMap[i]] = fnConvVNum(vShuffleMap[i]+1) + " " + v1[vShuffleMap[i]]
 
         }
@@ -365,7 +346,8 @@ function fnMakeMultiple() {
     gvQueList[vIndex].m1 = fnMarkDown((vIndex + 1) + ". " + m1)
     gvQueList[vIndex].v1 = v1
     gvQueList[vIndex].di = di // 답 인덱스
-    gvQueList[vIndex].d1 = fnMarkDown("<i class='bi bi-check-lg'></i> " + d1) // 답 markdown
+    gvQueList[vIndex].d1 = fnMarkDown("🌟 " + d1) // 답 markdown
+    //gvQueList[vIndex].d1 = fnMarkDown("<i class='bi bi-check-lg'></i> " + d1) // 답 markdown
     gvQueList[vIndex].h1 = fnMarkDown(h1)
     gvQueList[vIndex].k1 = ( k == undefined )? "": "<span class='badge bg-secondary'>" + k + "</span>"
 }
