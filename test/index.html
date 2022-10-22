@@ -18,12 +18,10 @@
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
         <script> MathJax = { tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]} }; </script>
 
-        <!--script src="./script/data.js"  type="text/javascript"></script-->
         <script src="./js/nenwa.js" type="text/javascript"></script>
 
         <script>
             $( document ).ready(function() {
-                //fnInit();
                 fnSelClass() // 임시
             })
             /*
@@ -36,17 +34,15 @@
         </script>
 
         <style>
-            * {
-                font-family: 'MaruBuri','Noto Sans KR', 'sans-serif', 'MaruBuri';
-            }
-            #div_m{ font-size: large; font-family: 'MaruBuriBold';}
+            * { font-family: 'MaruBuri','Noto Sans KR', 'sans-serif', 'MaruBuri'; }
+            #div_m{ font-size:large; font-family:'MaruBuriBold';}
             #div_v{ }
-            #div_d{ font-size: x-large; font-family: 'MaruBuriBold';}
-            #div_h{ font-family: 'MaruBuriSemiBold';}
-            p { margin-bottom:0px}
-            img { max-width : 100% }
+            #div_d{ font-size:x-large; font-family:'MaruBuriBold';}
+            #div_h{ font-family:'MaruBuriSemiBold';}
+            p { margin-bottom:0px }
+            img { max-width:100% }
+            .card-body { padding-top:0;}
             .list-group {bs-list-group-border-width : 0px !important; }
-
         </style>
     </head>
     <body>
@@ -64,11 +60,16 @@
                         <button type="button" class="btn btn-outline-success btn-lg" onclick="fnQue('N')"><i class="bi bi-arrow-right-circle"></i></button>
                     </div>
                 </div>
-                <h6 id="div_k" class="text-end">상세과목</h6>
-                <div class="card-body" id="div_m">문제내용</div>
-                <div class="card-body" id="div_v">
-                    <div class="row">보기</div>
+
+                <div class="card-body row justify-content-between">
+                    <div class="col" id="div_n"></div>
+                    <div class="col" id="div_k"></div>
                 </div>
+
+                <div class="card-body" id="div_m">문제내용</div>
+
+                <div class="card-body" id="div_v">보기</div>
+
                 <div class="card-body" id="div_dapgroup">
                     <div class="alert alert-success" role="alert" id="div_dapgrouptab">
                         <h4 class="form-control" id="div_d">답</h4>
