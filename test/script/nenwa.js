@@ -3,6 +3,7 @@ let gvQueSuffle // 문제 섞겠는냐
 let gvMulSuffle // 보기 섞겠느냐
 let gvViewMode  // 보기보드 1공부모드 2시험모드
 let gvMarkDownTF = true // 마크다운 컨버트?
+let gvClass = ""
 
 var converter;
 let gvIndex = 0
@@ -10,6 +11,12 @@ let gvIndex = 0
 $( document ).ready(function() {
     // 문제 순서 섞기
     $("#chkQueSuffle").change( () => reload() )
+
+    // 과목선택
+    $("#selClass").change( () => fnSelClass() )
+
+    // 문제이동
+    $("#selQue").change( () => fnSelQue() )
 
     // 보기 순서 섞기
     $("#chkMulSuffle").change( () => {
@@ -25,8 +32,20 @@ $( document ).ready(function() {
 
     gvQueSuffle = $("#chkQueSuffle").prop("checked")? true:false // 문제 섞겠는냐
     gvMulSuffle = $("#chkMulSuffle").prop("checked")? true:false // 보기 섞겠느냐
-    gvViewMode  = $('input[name="chkMode"]:checked').val();
+    gvViewMode  = $('input[name="chkMode"]:checked').val(); // 공부모드 시험모드
 });
+
+function fnSelClass() {
+    let vClass = $("#selClass").val()
+    if ( vClass == undefined || vClass == "" ) return
+
+    let vUrl = "./moon/" + vClass + "/data.js"
+    $.getScript(vUrl, function(data, textStatus, jqxhr) {
+        console.log('Load was performed.');
+        gvClass = vClass
+        fnInit()
+    })
+}
 
 // 시작
 function fnInit() {
@@ -48,9 +67,9 @@ function fnIndex(pIndex) {
     if ( pIndex == gvIndex   ) return gvIndex
 
     gvIndex = pIndex
-    fnCookie.set("nenwa_temp_", gvIndex)
+    fnCookie.set("nenwa_index_" + gvClass, gvIndex)
 
-    $("#sel_que").val(gvIndex)
+    $("#selQue").val(gvIndex)
     fnSetProgress() // 프로그레스바 그리기
 
     return gvIndex
@@ -90,16 +109,17 @@ function fnMoonLoad() {
     gvQueList = []
     for ( let i = 0; i < gvMoon.l.length; i++ ) {
         gvQueList.push(gvMoon.l[i])
-        vStr += "<option value=" + i + ">" + (i+1) + "</option>" // 문제 SelectBox 만들기
+        vStr += "<option value=" + i + ">" + (i+1) + ((gvMoon.l[i].k == undefined)? "" : " - " + gvMoon.l[i].k) + "</option>" // 문제 SelectBox 만들기
     }
-    $("#sel_que").html(vStr)
+    $("#selQue").html(vStr)
+    fnSetProgress()
 
     // 쿠키. 이전 저장번호 로드
-    let vIndex = 0 + Number(fnCookie.get("nenwa_temp_"))
+    let vIndex = 0 + Number(fnCookie.get("nenwa_index_" + gvClass))
     if ( vIndex == "" ) vIndex = 0
     if ( vIndex >= gvQueList.length ) vIndex = 0
     fnIndex(vIndex)
-    $("#sel_que").val(vIndex)
+    $("#selQue").val(vIndex)
 
     /*
     gvQueList[배열]
@@ -112,9 +132,8 @@ function fnMoonLoad() {
     if ( gvQueSuffle ) gvQueList = shuffleArray(gvQueList);
 }
 
-
 function fnSelQue(that) {
-    fnIndex(Number($(that).val()))
+    fnIndex(Number($("#selQue").val()))
     fnSetQ()
 }
 
@@ -182,23 +201,7 @@ function fnQue(vParam) {
         fnSetQ()
     } else if ( vParam == "R" ) {
         // 스크립트 새로 읽기
-        $.getScript("./script/data.js", function(data, textStatus, jqxhr) {
-            //console.log(data); //data returned
-            //console.log(textStatus); //success
-            //console.log(jqxhr.status); //200
-            console.log('Load was performed.');
-            //fnInit()
-            fnSetQ()
-        })
-
-        return;
-        // todo
-
-        if ( $("#div_d").is(":visible") ) { // 답이 열려있을때
-            fnQue("N")
-        } else {
-            fnOpenDap()
-        }
+        reload()
     }
 }
 
@@ -210,8 +213,10 @@ function fnOpenDap() {
     // 정답에 따라 색칠
     if ( vCorrect ) {
         $("#div_dapgrouptab").removeClass("alert-danger").addClass("alert-success")
+        //$("#div_d").removeClass("is-invalid").addClass("is-valid")
     } else {
         $("#div_dapgrouptab").removeClass("alert-success").addClass("alert-danger")
+        //$("#div_d").removeClass("is-valid").addClass("is-invalid")
     }
 
     // 답 그룹 오픈
@@ -223,9 +228,8 @@ function fnOpenDap() {
         // 선택한것을 붉은색. 추후 정답을 초록색으로 덧칠함. 한번에 할수있는게 있을텐데
         for ( let i = 0; i < vMultiple.length; i++ ) {
             if ( $('#chkQue'+ i).is(':checked') ) {
-                $("#liQue" + i ).addClass("list-group-item-danger")
+                $("#divFormControl" + i ).removeClass("form-control-plaintext").addClass("form-control is-invalid")
             }
-            $('#chkQue'+ i).attr("disabled","disabled")
         }
 
         // 정답을 초록색
@@ -234,12 +238,12 @@ function fnOpenDap() {
             let k = vFinAnswers[i] - 1
             // 답을 굵게
             $("#chkQueText" + k ).css('font-weight', 'bold')
-            $("#liQue" + k ).removeClass("list-group-item-danger").addClass("list-group-item-success")
+            //$("#liQue" + k ).removeClass("list-group-item-danger").addClass("list-group-item-success")
+            $("#divFormControl" + k ).removeClass("form-control-plaintext is-invalid").addClass("form-control is-valid")
         }
-    } else {
-        //TODO 주관식 스타일 수정.
-        $('#txtAnswer').addClass(vCorrect?"list-group-item list-group-item-success":"list-group-item list-group-item-danger")
-        $('#txtAnswer').attr("readonly","readonly")
+    } else { // 주관식
+        $('#txtAnswer').addClass(vCorrect?"is-valid":"is-invalid")
+        $('#txtAnswer').attr("readonly", "readonly")
     }
 }
 
@@ -259,10 +263,18 @@ function fnSetQ() {
     let h1 = vQue.h1 // 해설 가공
     let sd = vQue.myAnswers // sd [배열] 선택한 답
 
+    let k1 = vQue.k1 // 상세 과목
+    let n1 = vQue.n1 // 번호 가공
+
+    $("#div_k").html(k1) // 과목
     $("#div_m").html(m1) // 문제
     $("#div_v").html(fnVText()) // 보기 가공
     $("#div_d").html(d1) // 답
     $("#div_h").html(h1) // 해설
+
+    $("#div_n").html(n1) // 문제
+
+
 
     fnSetMyAnswers() // 내가 저장한 답 그리기
 
@@ -279,10 +291,13 @@ function fnSetQ() {
 // 보기 가공
 function fnMakeMultiple() {
     let vIndex = fnIndex()
+    // [필수]
     let m = gvQueList[vIndex].m // 문제
     let v = gvQueList[vIndex].v // [배열] 보기
     let d = gvQueList[vIndex].d // [배열] 답
     let h = gvQueList[vIndex].h // 해설
+    // [선택]
+    let k = gvQueList[vIndex].k // 상세과목명
 
     if ( d == undefined ) d = [""]
     m = fnMakeM(m) //TODO 임시 문제 가공
@@ -323,8 +338,7 @@ function fnMakeMultiple() {
 
             // 3. 보기 변경
             v1[vShuffleMap[i]] = v[i]
-
-            v1[vShuffleMap[i]] = v1[vShuffleMap[i]].replace("__" + (i + 1) + "__ ", "") // TODO 임시
+            //v1[vShuffleMap[i]] = v1[vShuffleMap[i]].replace("__" + (i + 1) + "__ ", "") // TODO 임시
             v1[vShuffleMap[i]] = fnConvVNum(vShuffleMap[i]+1) + " " + v1[vShuffleMap[i]]
 
         }
@@ -334,11 +348,14 @@ function fnMakeMultiple() {
 
     for ( let i = 0; i < v1.length; i++ ) { v1[i] = fnMarkDown(v1[i]) } // 보기[배열]를 마크다운으로 변환
     for ( let i = 0; i < d1.length; i++ ) { d1[i] = fnMarkDown(d1[i]) } // 답[배열]을 마크다운으로 변환
-    gvQueList[vIndex].m1 = fnMarkDown((vIndex + 1) + ". " + m1)
+
+    gvQueList[vIndex].m1 = fnMarkDown(m1)
     gvQueList[vIndex].v1 = v1
     gvQueList[vIndex].di = di // 답 인덱스
-    gvQueList[vIndex].d1 = fnMarkDown("<i class='bi bi-check-lg'></i> " + d1) // 답 markdown
+    gvQueList[vIndex].d1 = fnMarkDown("🌟 " + d1) // 답 markdown
     gvQueList[vIndex].h1 = fnMarkDown(h1)
+    gvQueList[vIndex].k1 = ( k == undefined )? "": "<h6 class='text-end'><span class='badge text-bg-light'>" + k + "</span></h6>"
+    gvQueList[vIndex].n1 = '<span class="badge text-bg-success">' +(vIndex + 1) + '</span>'
 }
 
 // 보기를 html로 변환
@@ -351,19 +368,18 @@ function fnVText() {
     if ( vShuffleV.length == 0 ) { // 보기가 없으면 주관식
         vRtn += "<input class='form-control form-control-lg' type='text' id='txtAnswer'>"
     } else {
-        vRtn += "<ul class='list-group'>"
+        //vRtn += "<ul class='list-group list-group-flush'>"
         for ( let i = 0; i < vShuffleV.length; i++ ) {
             let vv =
-            "<li class='list-group-item' id='liQue" + i + "'>"+
-            "<div class='form-check'>" +
+            //"<li class='list-group-item' id='liQue" + i + "'>"+
+            "<div class='form-check form-control-plaintext' id='divFormControl" + i + "'>" +
             "  <input class='form-check-input' type='" + type + "' name='chkQue' id='chkQue" + i + "'>" +
             "  <label class='form-check-label' for='chkQue" + i + "' id='chkQueText" + i + "'>" +  vShuffleV[i] +
             "  </label>" +
-            "</div>"+
-            "</li>"
+            "</div>"//+ "</li>"
             vRtn += vv
         }
-        vRtn += "</ul>"
+        //vRtn += "</ul>"
     }
     return vRtn
 }
@@ -385,9 +401,7 @@ function fnMakeM(m) {
     for ( let i = 0; i < gvStrongStr.length; i++ ) {
         m = m.replace(" " + gvStrongStr[i] + " "," <u>**" + gvStrongStr[i] + "**</u> ")
     }
-
     m = fnMarkDown(m) // 마크다운 변환
-
     return m
 }
 
