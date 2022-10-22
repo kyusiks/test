@@ -264,12 +264,17 @@ function fnSetQ() {
     let sd = vQue.myAnswers // sd [배열] 선택한 답
 
     let k1 = vQue.k1 // 상세 과목
+    let n1 = vQue.n1 // 번호 가공
 
     $("#div_k").html(k1) // 과목
     $("#div_m").html(m1) // 문제
     $("#div_v").html(fnVText()) // 보기 가공
     $("#div_d").html(d1) // 답
     $("#div_h").html(h1) // 해설
+
+    $("#div_n").html(n1) // 문제
+
+
 
     fnSetMyAnswers() // 내가 저장한 답 그리기
 
@@ -343,13 +348,14 @@ function fnMakeMultiple() {
 
     for ( let i = 0; i < v1.length; i++ ) { v1[i] = fnMarkDown(v1[i]) } // 보기[배열]를 마크다운으로 변환
     for ( let i = 0; i < d1.length; i++ ) { d1[i] = fnMarkDown(d1[i]) } // 답[배열]을 마크다운으로 변환
-    gvQueList[vIndex].m1 = fnMarkDown((vIndex + 1) + ". " + m1)
+
+    gvQueList[vIndex].m1 = fnMarkDown(m1)
     gvQueList[vIndex].v1 = v1
     gvQueList[vIndex].di = di // 답 인덱스
     gvQueList[vIndex].d1 = fnMarkDown("🌟 " + d1) // 답 markdown
-    //gvQueList[vIndex].d1 = fnMarkDown("<i class='bi bi-check-lg'></i> " + d1) // 답 markdown
     gvQueList[vIndex].h1 = fnMarkDown(h1)
-    gvQueList[vIndex].k1 = ( k == undefined )? "": "<span class='badge bg-secondary'>" + k + "</span>"
+    gvQueList[vIndex].k1 = ( k == undefined )? "": "<h6 class='text-end'><span class='badge text-bg-light'>" + k + "</span></h6>"
+    gvQueList[vIndex].n1 = '<span class="badge text-bg-success">' +(vIndex + 1) + '</span>'
 }
 
 // 보기를 html로 변환
