@@ -9,6 +9,14 @@ var converter;
 let gvIndex = 0
 
 $( document ).ready(function() {
+
+    // 과목 저장
+    var vClass = fnCookie.get("nenwa_class")
+    if ( vClass != "" ) {
+        var exists = 0 != $('#selClass option[value='+vClass+']').length
+        if ( exists ) $("#selClass").val(vClass)
+    }
+
     // 문제 순서 섞기
     $("#chkQueSuffle").change( () => reload() )
 
@@ -42,6 +50,7 @@ function fnSelClass() {
     let vUrl = "./moon/" + vClass + "/data.js"
     $.getScript(vUrl, function(data, textStatus, jqxhr) {
         console.log('Load was performed.');
+        fnCookie.set("nenwa_class", vClass)
         gvClass = vClass
         fnInit()
     })
@@ -328,7 +337,7 @@ function fnMakeMultiple() {
             let vReStr = fnConvVNum(vShuffleMap[i] + 1)
 
             // 1. 해설의 보기번호 변경
-            h1 = h1.replace(vReOrg, vReStr) // 해설의 __1__,__2__... 바꾼다.
+            h1 = h1.split(vReOrg).join(vReStr) // 해설의 __1__,__2__... 바꾼다.
 
             // 2. 답 변경
             for ( let j = 0; j < d.length; j++ ) {
@@ -338,7 +347,6 @@ function fnMakeMultiple() {
 
             // 3. 보기 변경
             v1[vShuffleMap[i]] = v[i]
-            //v1[vShuffleMap[i]] = v1[vShuffleMap[i]].replace("__" + (i + 1) + "__ ", "") // TODO 임시
             v1[vShuffleMap[i]] = fnConvVNum(vShuffleMap[i]+1) + " " + v1[vShuffleMap[i]]
 
         }
