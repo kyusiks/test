@@ -10,6 +10,13 @@ let gvIndex = 0
 
 $( document ).ready(function() {
 
+    // 문제 목록 가지고 온다.
+    let vInner = "" // list.js에 문제 목록 읽어온다
+    for ( let i = 0; i < gvList.length; i++ ) {
+        vInner += "<option value='" + gvList[i].val +"'>" + gvList[i].txt + "</option>\n"
+    }
+    $("#selClass").html(vInner)
+
     // 과목 저장
     var vClass = fnCookie.get("nenwa_class")
     if ( vClass != "" ) {
@@ -17,14 +24,9 @@ $( document ).ready(function() {
         if ( exists ) $("#selClass").val(vClass)
     }
 
-    // 문제 순서 섞기
-    $("#chkQueSuffle").change( () => reload() )
-
-    // 과목선택
-    $("#selClass").change( () => fnSelClass() )
-
-    // 문제이동
-    $("#selQue").change( () => fnSelQue() )
+    $("#chkQueSuffle").change( () => reload() ) // 문제 순서 섞기
+    $("#selClass").change( () => fnSelClass() ) // 과목선택
+    $("#selQue").change( () => fnSelQue() ) // 문제이동
 
     // 보기 순서 섞기
     $("#chkMulSuffle").change( () => {
